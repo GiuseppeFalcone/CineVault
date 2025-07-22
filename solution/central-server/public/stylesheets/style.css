@@ -1,0 +1,91 @@
+/* style.css */
+
+/* Global Body Styles */
+body {
+    background-color: black;
+    padding: 100px 50px 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+/* Common Panel (used in single‑movie, index, etc.) */
+.common-section {
+    background-color: #23272b;
+    padding: 2rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.common-section h2 {
+    border-bottom: 2px solid #ffc107;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Card Styling (common for movie cards, cast, crew, reviews, etc.) */
+.card {
+    background-color: #343a40 !important;
+    border: none !important;
+    border-radius: 0.3rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.card:hover {
+    background-color: #2c2f33 !important;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-title {
+    color: #ffc107;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+}
+
+.card-footer {
+    background-color: #343a40;
+    border-top: 1px solid #555;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Buttons common to both pages */
+.btn-secondary.text-warning {
+    background-color: #343a40;
+    border-color: #ffc107;
+    color: #ffc107;
+}
+
+.btn-secondary.text-warning:hover {
+    background-color: #23272b;
+    color: #ffc107;
+    border-color: #ffc107;
+}
+
+.active-btn {
+    font-weight: bold;
+    border: 1px solid #ffc107;
+    color: #ffc107 !important;
+    background-color: #343a40 !important;
+}
+
+/* Minor Tweaks */
+.text-muted {
+    color: #8a8a92 !important;
+}
+
+.lead {
+    font-size: 1.25rem;
+    color: #ffc107;
+}

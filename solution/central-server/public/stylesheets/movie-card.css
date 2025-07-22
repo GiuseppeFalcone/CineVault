@@ -1,0 +1,31 @@
+/* movie-card.css */
+
+article.movie-card {
+    background-color: #1a1a1a;
+    border: none;
+    width: 160px;
+    flex: 0 0 auto;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+article.movie-card .card-img-top {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    margin-top: 0.5rem;
+}
+
+article.movie-card .card-body {
+    padding: 0.5rem;
+}
+
+article.movie-card .card-title {
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: white;
+}

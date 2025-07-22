@@ -1,0 +1,12 @@
+{{!-- movie-card.hbs --}}
+<article class="movie-card card">
+    <a href="/movies/{{id}}" class="text-decoration-none">
+        <img src="{{#if posterLink}}{{posterLink}}{{else}}https://placehold.co/160x240/grey/white?text={{title}}{{/if}}"
+             class="card-img-top w-100 d-block"
+             alt="{{title}} Poster"
+             loading="lazy">
+        <div class="card-body">
+            <h5 class="card-title">{{title}}</h5>
+        </div>
+    </a>
+</article>

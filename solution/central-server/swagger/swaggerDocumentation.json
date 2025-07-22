@@ -1,0 +1,858 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Cinevault Central Server API Documentation",
+    "description": "Documentation for the central server routes.\n\nContacts:\n- Giuseppe Falcone (giuseppe.falcone@edu.unito.it)\n- Gabriele Vettorello (gabriele.vettorello@edu.unito.it)"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Central server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Homepage",
+      "description": "Homepage endpoint"
+    },
+    {
+      "name": "Movies",
+      "description": "Endpoints for movies centered pages and movies information"
+    },
+    {
+      "name": "People",
+      "description": "Endpoints for actors and crew member information"
+    },
+    {
+      "name": "Search",
+      "description": "Search functionality endpoint"
+    },
+    {
+      "name": "Chat",
+      "description": "Chat related endpoint"
+    },
+    {
+      "name": "Reviews",
+      "description": "Endpoints for reviews from Dynamic Data Server"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Serves homepage with movies divided into genres, newest, and top-rated",
+        "description": "Fetches genre-based rows, newest movies, and top reviewed movies concurrently and renders the homepage.",
+        "tags": [
+          "Homepage"
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML content for the homepage",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "summary": "Search movies by field and value",
+        "description": "Accepts query parameters 'field' and 'value' to search for movies.",
+        "tags": [
+          "Search"
+        ],
+        "parameters": [
+          {
+            "name": "field",
+            "in": "query",
+            "required": true,
+            "description": "Field to search by.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Title",
+                "Year",
+                "Language",
+                "Production Country",
+                "Studio",
+                "Theme",
+                "Genre",
+                "Crew",
+                "Actor"
+              ],
+              "example": "title"
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "required": true,
+            "description": "Value to search for",
+            "schema": {
+              "type": "string",
+              "example": "Barbie"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML content for the search results page",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid parameters",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chat": {
+      "get": {
+        "summary": "Renders chat interface page",
+        "description": "Displays the chat page for user interaction.",
+        "tags": [
+          "Chat"
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML content for the chat page",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies": {
+      "get": {
+        "summary": "Render movies page with filters and initial listing",
+        "description": "Retrieves movie filters and the first set of movies (20 movies with offset 0) for display.",
+        "tags": [
+          "Movies"
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML content for the movies page",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/load-more-movies": {
+      "get": {
+        "summary": "Retrieve additional movies for pagination",
+        "description": "Fetches more movies based on the provided 'offset' query parameter for infinite scrolling or pagination.",
+        "tags": [
+          "Movies"
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": true,
+            "description": "Number of movies to skip",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML partial for additional movies",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid offset",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/get-filtered-movies": {
+      "get": {
+        "summary": "Filter movies based on provided criteria",
+        "description": "Filters movies using review type (Fresh or Rotten), genre, language, country and year. Returns an HTML partial.",
+        "tags": [
+          "Movies"
+        ],
+        "parameters": [
+          {
+            "name": "typeReviews",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fresh",
+                "rotten",
+                "Fresh",
+                "Rotten"
+              ],
+              "example": "Fresh"
+            },
+            "description": "Review type filter (Fresh or Rotten)"
+          },
+          {
+            "name": "genre",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "Action"
+            },
+            "description": "Filter by genre"
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "example": 2020
+            },
+            "description": "Filter by year"
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "English"
+            },
+            "description": "Filter by language"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "USA"
+            },
+            "description": "Filter by country"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML partial for filtered movies",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid filter parameters",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/reviews-by-movie-title": {
+      "get": {
+        "summary": "Retrieve reviews for a specific movie",
+        "description": "Returns a JSON array of reviews for the movie identified by 'movieTitle'. Supports pagination via 'limit' and 'skip'.",
+        "tags": [
+          "Movies"
+        ],
+        "parameters": [
+          {
+            "name": "movieTitle",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Percy Jackson & the Olympians: The Lightning Thief"
+            },
+            "description": "Title of the movie"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 15,
+              "example": 10
+            },
+            "description": "Maximum number of reviews to return"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "example": 0
+            },
+            "description": "Number of reviews to skip (for pagination)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response of movie reviews",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Review"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing or invalid parameters",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{movieId}": {
+      "get": {
+        "summary": "Render detailed movie page",
+        "description": "Displays movie details, reviews, Oscar awards, and related movies based on the provided movieId.",
+        "tags": [
+          "Movies"
+        ],
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "long",
+              "example": 1000001
+            },
+            "description": "ID of the requested movie"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML content for the single movie page",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Movie not found",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/people/actor/{actorName}": {
+      "get": {
+        "summary": "Retrieve actor page with movies and awards",
+        "description": "Displays movies featuring the actor along with any associated Oscar awards using the provided actor name.",
+        "tags": [
+          "People"
+        ],
+        "parameters": [
+          {
+            "name": "actorName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Leonardo DiCaprio"
+            },
+            "description": "Name of the actor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML content for the actor's page",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing actor name",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/people/crew/{crewName}": {
+      "get": {
+        "summary": "Retrieve crew member page with movies and awards",
+        "description": "Displays movies the crew member worked on along with any associated Oscar awards using the provided crew name.",
+        "tags": [
+          "People"
+        ],
+        "parameters": [
+          {
+            "name": "crewName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Christopher Nolan"
+            },
+            "description": "Name of the crew member"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HTML content for the crew member's page",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing crew name",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Movie": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1000001
+          },
+          "title": {
+            "type": "string",
+            "example": "Barbie"
+          },
+          "year": {
+            "type": "string",
+            "example": "2023"
+          },
+          "tagline": {
+            "type": "string",
+            "example": "She's everything. He's just Ken."
+          },
+          "description": {
+            "type": "string",
+            "example": "Barbie and Ken are having the time of their lives in the colorful and seemingly perfect world of Barbie Land. However, when they get a chance to go to the real world, they soon discover the joys and perils of living among humans."
+          },
+          "duration": {
+            "type": "integer",
+            "example": 114
+          },
+          "rating": {
+            "type": "number",
+            "format": "float",
+            "example": 3.86
+          },
+          "poster": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "posterLink": {
+                "type": "string",
+                "example": "https://a.ltrbxd.com/resized/film-poster/2/7/7/0/6/4/277064-barbie-0-230-0-345-crop.jpg?v=1b83dc7a71"
+              },
+              "movie": {
+                "type": "integer",
+                "example": 1000001
+              }
+            }
+          },
+          "studios": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "studio": {
+                  "type": "string",
+                  "example": "LuckyChap Entertainment"
+                },
+                "movie": {
+                  "type": "integer",
+                  "example": 1000001
+                }
+              }
+            }
+          },
+          "themes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "theme": {
+                  "type": "string",
+                  "example": "Humanity and the world around us"
+                },
+                "movie": {
+                  "type": "integer",
+                  "example": 1000001
+                }
+              }
+            }
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "genre": {
+                  "type": "string",
+                  "example": "Comedy"
+                },
+                "movie": {
+                  "type": "integer",
+                  "example": 1000001
+                }
+              }
+            }
+          },
+          "crews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "crewRole": {
+                  "type": "string",
+                  "example": "Director"
+                },
+                "crewName": {
+                  "type": "string",
+                  "example": "Greta Gerwig"
+                },
+                "movie": {
+                  "type": "integer",
+                  "example": 1000001
+                }
+              }
+            }
+          },
+          "actors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "movie": {
+                  "type": "integer",
+                  "example": 1000001
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Margot Robbie"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "Barbie"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Review": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "67d03ed8e6c219b91cf44326"
+          },
+          "rotten_tomatoes_link": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://www.rottentomatoes.com/m/0814255"
+          },
+          "movie_title": {
+            "type": "string",
+            "example": "Percy Jackson & the Olympians: The Lightning Thief"
+          },
+          "critic_name": {
+            "type": "string",
+            "example": "Richard Propes"
+          },
+          "top_critic": {
+            "type": "boolean",
+            "example": false
+          },
+          "publisher_name": {
+            "type": "string",
+            "example": "TheIndependentCritic.com"
+          },
+          "review_type": {
+            "type": "string",
+            "enum": [
+              "Fresh",
+              "Rotten"
+            ],
+            "example": "Rotten"
+          },
+          "review_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-09-19T00:00:00.000Z"
+          },
+          "review_content": {
+            "type": "string",
+            "example": "There's nothing resembling a spark in this film anywhere."
+          },
+          "review_score": {
+            "type": "number",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "Oscar": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "67e4484d3c2b98ef5e4aec49"
+          },
+          "year_film": {
+            "type": "integer",
+            "example": 2018
+          },
+          "year_ceremony": {
+            "type": "integer",
+            "example": 2019
+          },
+          "ceremony": {
+            "type": "integer",
+            "example": 91
+          },
+          "category": {
+            "type": "string",
+            "example": "ACTOR IN A LEADING ROLE"
+          },
+          "name": {
+            "type": "string",
+            "example": "Rami Malek"
+          },
+          "film": {
+            "type": "string",
+            "example": "Bohemian Rhapsody"
+          },
+          "winner": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "ErrorPage": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 500
+          },
+          "message": {
+            "type": "string",
+            "example": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}

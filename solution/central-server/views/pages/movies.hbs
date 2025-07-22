@@ -1,0 +1,74 @@
+<link rel="stylesheet" href="/stylesheets/menu-dropdown.css"/>
+<link rel="stylesheet" href="/stylesheets/movie-card.css"/>
+<div class="container py-4">
+    <div class="mt-4">
+        <form id="filtersForm" class="form-inline d-flex flex-wrap align-items-center mb-2">
+            <!-- GENRE -->
+            <div class="form-group ">
+                <select id="genreFilter" class="form-control custom-dropdown bg-secondary text-white fw-bold"
+                        name="genre">
+                    <option value="">Genre</option>
+                    {{#each filters.genres}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <!-- LANGUAGE -->
+            <div class="form-group ">
+                <select id="languageFilter" class="form-control custom-dropdown bg-secondary text-white fw-bold"
+                        name="language">
+                    <option value="">Language</option>
+                    {{#each filters.languages}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <!-- PRODUCTION COUNTRY -->
+            <div class="form-group">
+                <select id="countryFilter" class="form-control custom-dropdown bg-secondary text-white fw-bold"
+                        name="country">
+                    <option value="">Country</option>
+                    {{#each filters.countries}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <!-- RELEASE YEAR -->
+            <div class="form-group">
+                <select id="releaseYearFilter" class="form-control custom-dropdown bg-secondary text-white fw-bold"
+                        name="releaseYear">
+                    <option value="">Year</option>
+                    {{#each filters.releaseYears}}
+                        <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <!-- TYPE REVIEWS -->
+            <div class="form-group">
+                <select id="typeReviews" class="form-control custom-dropdown bg-secondary text-white fw-bold" name="releaseYear">
+                    <option value="">Review Type</option>
+                    <option value="fresh">Fresh</option>
+                    <option value="rotten">Rotten</option>
+                </select>
+            </div>
+            <!-- APPLY & RESET FILTERS -->
+            <button type="button" id="applyFiltersBtn" class="btn btn-secondary text-warning fw-bold me-2">
+                Apply Filter
+            </button>
+            <button type="button" id="resetFiltersBtn" class="btn btn-secondary text-warning fw-bold ">
+                Reset Filters
+            </button>
+        </form>
+    </div>
+    <section id="movies-container" class="common-section row">
+        {{> movie-list }}
+    </section>
+    <button id="loadMoreButton" class="btn d-block mx-auto btn-secondary text-warning fw-bold mb-4">
+        Load More Movies
+    </button>
+</div>
+<script src="/javascripts/movies.js"></script>

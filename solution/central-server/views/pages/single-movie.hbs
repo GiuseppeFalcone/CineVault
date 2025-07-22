@@ -1,0 +1,277 @@
+{{!-- single-movie.hbs --}}
+<link rel="stylesheet" href="/stylesheets/oscar-section.css">
+<link rel="stylesheet" href="/stylesheets/movie-row.css">
+<link rel="stylesheet" href="/stylesheets/movie-card.css">
+<div class="container my-5">
+    <!-- Movie Header: Poster and Basic Info -->
+    <section class="movie-header mb-5">
+        <div class="row">
+            <div class="col-md-4">
+            <img src="
+            {{#if poster}}
+                {{poster}}
+            {{else}}
+                    https://placehold.co/200x180/grey/white?text={{title}}
+            {{/if}}"
+                alt="{{title}} Poster"
+                class="img-fluid rounded shadow mx-auto d-block">
+            </div>
+            <div class="col-md-8">
+                {{#if title}}
+                    <h1 class="display-4 text-white">{{title}}</h1>
+                {{/if}}
+                {{#if tagline}}
+                    <p class="lead text-warning">{{tagline}}</p>
+                {{/if}}
+                {{#if description}}
+                    <p class="text-white">{{description}}</p>
+                {{/if}}
+                <ul class="list-unstyled text-white">
+                    {{#if year}}
+                        <li><strong class="text-warning">Release Year:</strong> {{year}}</li>
+                    {{/if}}
+                    {{#if duration}}
+                        <li><strong class="text-warning">Duration:</strong> {{duration}} min</li>
+                    {{/if}}
+                    {{#if rating}}
+                        <li><strong class="text-warning">Rating:</strong> {{rating}} / 5</li>
+                    {{/if}}
+                    {{#if studios}}
+                        <li>
+                            <strong class="text-warning">Production Studios:</strong>
+                            {{#each studios limit=3}}
+                                {{#if @first}}<span class="text-white">{{this}}</span>{{else}}, <span class="text-white">{{this}}</span>{{/if}}
+                            {{/each}}
+                            {{#if (gt (length studios) 3)}}
+                                <span class="badge bg-secondary">+{{subtract (length studios) 3}} more</span>
+                            {{/if}}
+                        </li>
+                    {{/if}}
+                    {{#if genres}}
+                        <li>
+                            <strong class="text-warning">Genres:</strong>
+                            {{#each genres limit=3}}
+                                {{#if @first}}<span class="text-white">{{this}}</span>{{else}}, <span class="text-white">{{this}}</span>{{/if}}
+                            {{/each}}
+                            {{#if (gt (length genres) 3)}}
+                                <span class="badge bg-secondary">+{{subtract (length genres) 3}} more</span>
+                            {{/if}}
+                        </li>
+                    {{/if}}
+                    {{#if themes}}
+                        <li>
+                            <strong class="text-warning">Themes:</strong>
+                            {{#each themes}}
+                                {{#if (lt @index 3)}}
+                                    {{#if @first}}<span class="text-white">{{this}}</span>{{else}}, <span class="text-white">{{this}}</span>{{/if}}
+                                {{/if}}
+                            {{/each}}
+                            {{#if (gt themes.length 3)}}
+                                <span class="badge bg-secondary">+{{subtract themes.length 3}} more</span>
+                            {{/if}}
+                        </li>
+                    {{/if}}
+                    {{#if languages}}
+                        <li>
+                            <strong class="text-warning">Languages:</strong>
+                            {{#each languages}}
+                                {{#if (eq type "Primary Language")}}
+                                    <span class="text-white">{{language}}</span>
+                                {{else}}
+                                    <span class="text-white">{{language}} <small class="text-muted">({{type}})</small></span>
+                                {{/if}}
+                                {{#unless @last}} • {{/unless}}
+                            {{/each}}
+                        </li>
+                    {{/if}}
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cast Section -->
+    {{#if actors}}
+        <section class="cast-section mb-5 common-section">
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="text-white">Cast</h2>
+                        <button id="toggle-cast" class="btn btn-secondary text-warning fw-bold">
+                            Show More <i class="bi bi-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="row" id="cast-container">
+                        {{#each actors}}
+                            <div class="col-6 col-md-3 mb-3 cast-member">
+                                <div class="card h-100">
+                                    <a href="/person/actor/{{name}}" class="text-decoration-none">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="card-title">{{name}}</h5>
+                                                {{#if (hasOscar name ../oscars)}}
+                                                    {{#if (oscarWinner name ../oscars)}}
+                                                        <i class="bi bi-award-fill oscar-icon"
+                                                           title="Oscar Winner"></i>
+                                                    {{else}}
+                                                        <i class="bi bi-award oscar-icon" title="Oscar Nominee"></i>
+                                                    {{/if}}
+                                                {{/if}}
+                                            </div>
+                                            <p class="card-text">{{role}}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {{/if}}
+
+    <!-- Crew Section -->
+    {{#if crew}}
+        <section class="crew-section mb-5 common-section">
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="text-white">Crew</h2>
+                        <button id="toggle-crew" class="btn btn-secondary text-warning fw-bold">
+                            Show More <i class="bi bi-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="row" id="crew-container">
+                        {{#each crew}}
+                            <div class="col-6 col-md-3 mb-3 crew-member">
+                                <div class="card h-100">
+                                    <a href="/person/crew/{{crewName}}" class="text-decoration-none">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="card-title">{{crewName}}</h5>
+                                                {{#if (hasOscar crewName ../oscars)}}
+                                                    {{#if (oscarWinner crewName ../oscars)}}
+                                                        <i class="bi bi-award-fill oscar-icon"
+                                                           title="Oscar Winner"></i>
+                                                    {{else}}
+                                                        <i class="bi bi-award oscar-icon" title="Oscar Nominee"></i>
+                                                    {{/if}}
+                                                {{/if}}
+                                            </div>
+                                            <p class="card-text">{{crewRole}}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {{/if}}
+
+    <!-- Oscar Awards Section -->
+    {{#if oscars}}
+        <section class="oscar-awards-section mb-5">
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="text-white">Oscar Awards</h2>
+                        <button id="toggle-oscars" class="btn btn-secondary text-warning fw-bold">
+                            Show More <i class="bi bi-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="list-group" id="oscars-container">
+                        {{#each oscars}}
+                            <div class="list-group-item justify-content-between align-items-center oscar-item">
+                                <div class="oscar-info">
+                                    <h5 class="mb-1">{{category}}</h5>
+                                    {{#if (oscarWinner name ../oscars)}}
+                                        <p class="mb-1">Awarded to: {{name}}</p>
+                                    {{else}}
+                                        <p class="mb-1">Nominee: {{name}}</p>
+                                    {{/if}}
+                                    <small>Ceremony Year: {{year_ceremony}}</small>
+                                </div>
+                                <div>
+                                    {{#if winner}}
+                                        <i class="bi bi-award-fill oscar-icon" title="Oscar Winner"></i>
+                                    {{else}}
+                                        <i class="bi bi-award oscar-icon" title="Oscar Nominee"></i>
+                                    {{/if}}
+                                </div>
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </section>
+    {{/if}}
+
+    <!-- Critics Reviews Section -->
+    {{#if reviews}}
+        <section class="reviews-section mb-5 common-section">
+            <div class="row">
+                <div class="col">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="text-white mb-0">Critics Reviews</h2>
+                        <a href="{{rotten_tomatoes_link}}" class="text-warning fw-bold" target="_blank">Full
+                            Review</a>
+                    </div>
+                    <div class="mb-3">
+                        <button id="btn-latest-to-oldest" class="btn btn-sm btn-secondary me-2 active-btn">Latest to
+                            Oldest
+                        </button>
+                        <button id="btn-oldest-to-latest" class="btn btn-sm btn-secondary me-2">Oldest to Latest
+                        </button>
+                        <button id="btn-fresh" class="btn btn-sm btn-secondary me-2">Fresh Only</button>
+                        <button id="btn-rotten" class="btn btn-sm btn-secondary me-2">Rotten Only</button>
+                        <button id="btn-top-critic" class="btn btn-sm btn-secondary me-2">Top Critics</button>
+                        <button id="btn-reset" class="btn btn-sm btn-secondary me-2">Reset</button>
+                    </div>
+                    <div class="row" id="critics-reviews-container">
+                        {{#each reviews}}
+                            <div class="col-12 col-md-6 col-lg-4 mb-3 review-card"
+                                 data-review-type="{{review_type}}"
+                                 data-top-critic="{{top_critic}}"
+                                 data-review-score="{{review_score}}"
+                                 data-review-date="{{review_date}}">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h5 class="card-title mb-0">{{critic_name}}</h5>
+                                            {{#if top_critic}}
+                                                <span class="badge badge-yellow">
+                                                    <i class="bi bi-star-fill"></i>
+                                                    TOP CRITIC
+                                                </span>
+                                            {{/if}}
+                                        </div>
+                                        <h6 class="card-subtitle mb-2 text-warning">{{publisher_name}}</h6>
+                                        <p class="card-text mb-2 text-white">{{review_content}}</p>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">{{formatDate review_date}}</span>
+                                        {{#if (eq review_type "Fresh")}}
+                                            <span class="badge bg-success">{{review_type}}</span>
+                                        {{else}}
+                                            <span class="badge bg-danger">{{review_type}}</span>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                            </div>
+                        {{/each}}
+                    </div>
+                    <div class="text-center my-4">
+                        <button id="load-more-reviews" class="btn btn-secondary">Load More Reviews</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {{/if}}
+    {{#if related}}
+        {{> movie-row category="Related Movies" movies=related}}
+    {{/if}}
+</div>
+
+<script src="/javascripts/single-movie.js"></script>
+<script src="/javascripts/movie-row.js"></script>

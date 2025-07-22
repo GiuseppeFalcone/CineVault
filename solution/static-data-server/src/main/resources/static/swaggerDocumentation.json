@@ -1,0 +1,832 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Cinevault Static Data Server API",
+    "description": "API documentation for the Spring Boot server that provides general data about movies for the Cinevault movies wiki website.\\n\\nContacts:\\n- Giuseppe Falcone (giuseppe.falcone@edu.unito.it)\\n- Gabriele Vettorello (gabriele.vettorello@edu.unito.it)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Movies By Value",
+      "description": "Endpoints related to retrieving movie data by providing one or more values."
+    },
+    {
+      "name": "Movies By Logic",
+      "description": "Endpoints related to retrieving movie data by providing one or more logical patterns."
+    },
+    {
+      "name": "Possible Query Parameters",
+      "description": "Endpoints that provide possible query parameters for filtering movies."
+    }
+  ],
+  "paths": {
+    "/api/movies/{id}": {
+      "get": {
+        "tags": [
+          "Movies By Value"
+        ],
+        "summary": "Retrieve a specific movie by its ID",
+        "description": "Fetches the full details of a movie based on its unique identifier.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Numeric ID of the movie to retrieve.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1000001
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movie details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MovieDetailedDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Movie not found for the provided ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/get-related": {
+      "get": {
+        "tags": [
+          "Movies By Value"
+        ],
+        "summary": "Get related movies by genres",
+        "description": "Fetches a list of movie summaries that are related to a given movie, based on shared genres.",
+        "parameters": [
+          {
+            "name": "movieId",
+            "in": "query",
+            "required": true,
+            "description": "Numeric ID of the movie for which to find related movies.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1000001
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved related movies.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MovieSummaryDTO"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Base movie (for finding related ones) not found for the provided ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/random-genre-based": {
+      "get": {
+        "tags": [
+          "Movies By Logic"
+        ],
+        "summary": "Get random movies grouped by genre",
+        "description": "Fetches a list of categories, each containing a list of random movie summaries for a specific genre.",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved random movies grouped by genre.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MoviesCategoryBasedDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/get-latest": {
+      "get": {
+        "tags": [
+          "Movies By Logic"
+        ],
+        "summary": "Get latest movies category",
+        "description": "Fetches a category DTO containing movie summaries for the most recently added or released movies.",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the latest movies category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MoviesCategoryBasedDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/get-20-movies": {
+      "get": {
+        "tags": [
+          "Movies By Logic"
+        ],
+        "summary": "Get a paginated list of movies",
+        "description": "Fetches a list of 20 movie summaries per page, based on the provided offset for pagination.",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of movies to skip before starting to collect the result set.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a page of movie summaries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MovieSummaryDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/get-by-titles": {
+      "post": {
+        "tags": [
+          "Movies By Value"
+        ],
+        "summary": "Get movies by a list of titles",
+        "description": "Fetches movie summaries for movies matching the provided list of titles.",
+        "requestBody": {
+          "required": true,
+          "description": "A JSON array of movie titles to search for.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": [
+                  "Inception",
+                  "The Dark Knight",
+                  "Interstellar"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movies matching the titles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MovieSummaryDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/get-filtered-movies": {
+      "post": {
+        "tags": [
+          "Movies By Value"
+        ],
+        "summary": "Get movies based on multiple filters",
+        "description": "Fetches movie summaries based on a combination of filters such as genre, language, country, release year, and a list of titles, with pagination.",
+        "requestBody": {
+          "required": true,
+          "description": "A JSON object containing filter criteria.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovieFilterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved filtered movies.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MovieSummaryDTO"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, possibly due to invalid filter parameters (e.g., invalid year format).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/filters": {
+      "get": {
+        "tags": [
+          "Possible Query Parameters"
+        ],
+        "summary": "Get available filter values for movies",
+        "description": "Fetches a map of available unique filter values for properties like genres, languages, countries, and release years.",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved available filter values.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "genres": [
+                      "Action",
+                      "Comedy",
+                      "Drama"
+                    ],
+                    "languages": [
+                      "English",
+                      "Spanish",
+                      "French"
+                    ],
+                    "countries": [
+                      "USA",
+                      "Canada",
+                      "UK"
+                    ],
+                    "releaseYears": [
+                      "2020",
+                      "2021",
+                      "2022"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/search": {
+      "get": {
+        "tags": [
+          "Movies By Value"
+        ],
+        "summary": "Search movies by a specific field and value",
+        "description": "Searches for movies based on a single field (e.g., title, year, actor) and a corresponding value, with pagination.",
+        "parameters": [
+          {
+            "name": "field",
+            "in": "query",
+            "required": true,
+            "description": "The field to search by.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "title",
+                "year",
+                "language",
+                "productioncountry",
+                "studio",
+                "theme",
+                "genre",
+                "crew",
+                "actor"
+              ],
+              "example": "title"
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "required": true,
+            "description": "The value to search for in the specified field.",
+            "schema": {
+              "type": "string",
+              "example": "Inception"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of movies to skip before starting to collect the result set.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "example": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved search results.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MovieSummaryDTO"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, possibly due to invalid search field or value.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No movies found for the given search criteria (specific to some invalid field cases in service).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/movies/by-name": {
+      "get": {
+        "tags": [
+          "Movies By Value"
+        ],
+        "summary": "Get movies by actor or crew member name",
+        "description": "Fetches movie summaries for movies associated with a specific actor or crew member, with pagination.",
+        "parameters": [
+          {
+            "name": "personType",
+            "in": "query",
+            "required": true,
+            "description": "Type of the person.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "actor",
+                "crew"
+              ],
+              "example": "actor"
+            }
+          },
+          {
+            "name": "personName",
+            "in": "query",
+            "required": true,
+            "description": "Name of the actor or crew member.",
+            "schema": {
+              "type": "string",
+              "example": "Leonardo DiCaprio"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "The number of movies to skip before starting to collect the result set.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0,
+              "example": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved movies for the specified person.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MovieSummaryDTO"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, possibly due to invalid personType or personName.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MovieDetailedDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1000001
+          },
+          "title": {
+            "type": "string",
+            "example": "Barbie"
+          },
+          "year": {
+            "type": "string",
+            "example": "2023"
+          },
+          "tagline": {
+            "type": "string",
+            "nullable": true,
+            "example": "She's everything. He's just Ken."
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Barbie and Ken are having the time of their lives..."
+          },
+          "duration": {
+            "type": "integer",
+            "nullable": true,
+            "example": 114
+          },
+          "rating": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "example": 3.86
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LanguageItem"
+            }
+          },
+          "productionCountries": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "USA"
+            }
+          },
+          "poster": {
+            "type": "string",
+            "format": "url",
+            "nullable": true,
+            "example": "https://..."
+          },
+          "studios": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "LuckyChap Entertainment"
+            }
+          },
+          "themes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Humanity and the world around us"
+            }
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Comedy"
+            }
+          },
+          "crew": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CrewMemberItem"
+            }
+          },
+          "actors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActorItem"
+            }
+          }
+        }
+      },
+      "MovieSummaryDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1000001
+          },
+          "title": {
+            "type": "string",
+            "example": "Barbie"
+          },
+          "posterLink": {
+            "type": "string",
+            "format": "url",
+            "nullable": true,
+            "example": "https://a.ltrbxd.com/resized/film-poster/2/7/7/0/6/4/277064-barbie-0-230-0-345-crop.jpg?v=1b83dc7a71"
+          }
+        }
+      },
+      "MoviesCategoryBasedDTO": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "example": "Action"
+          },
+          "movieSummaryDTOs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MovieSummaryDTO"
+            }
+          }
+        }
+      },
+      "MovieFilterRequest": {
+        "type": "object",
+        "description": "Request object for filtering movies.",
+        "properties": {
+          "genre": {
+            "type": "string",
+            "nullable": true,
+            "example": "Action"
+          },
+          "language": {
+            "type": "string",
+            "nullable": true,
+            "example": "English"
+          },
+          "country": {
+            "type": "string",
+            "nullable": true,
+            "example": "USA"
+          },
+          "releaseYear": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Year of release (YYYY).",
+            "nullable": true,
+            "example": 2023
+          },
+          "movieTitles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "example": [
+              "Barbie",
+              "Oppenheimer"
+            ]
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Pagination offset.",
+            "nullable": true,
+            "default": 0,
+            "example": 0
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "example": "Detailed error message."
+          }
+        }
+      },
+      "LanguageItem": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "example": "English"
+          },
+          "type": {
+            "type": "string",
+            "example": "Spoken"
+          }
+        }
+      },
+      "CrewMemberItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Greta Gerwig"
+          },
+          "role": {
+            "type": "string",
+            "example": "Director"
+          }
+        }
+      },
+      "ActorItem": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Margot Robbie"
+          },
+          "character": {
+            "type": "string",
+            "example": "Barbie"
+          }
+        }
+      }
+    }
+  }
+}

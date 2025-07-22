@@ -1,0 +1,16 @@
+{{!-- search-results.hbs --}}
+<link rel="stylesheet" href="/stylesheets/movie-card.css">
+<div class="container py-4">
+<div class="common-section">
+    <h2>Results for {{field}}: {{value}}</h2>
+    <section id="movies-container" class="common-section row">
+        {{> movie-list }}
+    </section>
+</div>
+    <button class="btn btn-secondary text-warning d-block mx-auto" id="load-more-btn" type="button"
+            data-field="{{field}}" data-value="{{value}}">
+        Load More
+    </button>
+</div>
+
+<script src="/javascripts/search.js"></script>

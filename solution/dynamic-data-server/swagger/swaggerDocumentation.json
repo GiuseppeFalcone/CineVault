@@ -1,0 +1,194 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Cinevault Dynamic Server API Documentation",
+    "description": "Documentation for the dynamic server routes serving review and Oscar data.\n\nContacts:\n- Giuseppe Falcone (giuseppe.falcone@edu.unito.it)\n- Gabriele Vettorello (gabriele.vettorello@edu.unito.it)"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001",
+      "description": "Dynamic server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Reviews",
+      "description": "Endpoints for retrieving rotten tomatoes movie reviews"
+    },
+    {
+      "name": "Oscars",
+      "description": "Endpoints for retrieving Oscar data"
+    }
+  ],
+  "paths": {
+    "/reviews/by-movie": {
+      "get": {
+        "summary": "Get reviews by movie title",
+        "description": "Returns reviews for the specified movie title, with optional pagination.",
+        "tags": ["Reviews"],
+        "parameters": [
+          {
+            "name": "movieTitle",
+            "in": "query",
+            "required": true,
+            "description": "Title of the movie",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of results",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "description": "Number of results to skip",
+            "schema": { "type": "integer", "default": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of reviews",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Review" }
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing or invalid parameters" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/reviews/top-rated": {
+      "get": {
+        "summary": "Top 20 movies by review type",
+        "description": "Returns top 20 movie titles sorted by review score for the given review type.",
+        "tags": ["Reviews"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "description": "Review type (Fresh or Rotten)",
+            "schema": { "type": "string", "enum": ["Fresh", "Rotten"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of movie titles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid review type" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/oscars/by-actor": {
+      "get": {
+        "summary": "Oscar wins by actor",
+        "description": "Returns Oscar data for a given actor.",
+        "tags": ["Oscars"],
+        "parameters": [
+          {
+            "name": "actorName",
+            "in": "query",
+            "required": true,
+            "description": "Full name of the actor",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Oscar awards",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Oscar" }
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing or invalid actor name" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/oscars/by-film": {
+      "get": {
+        "summary": "Oscar data by film",
+        "description": "Returns Oscar data for a given film title.",
+        "tags": ["Oscars"],
+        "parameters": [
+          {
+            "name": "movieTitle",
+            "in": "query",
+            "required": true,
+            "description": "Title of the movie",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Oscar entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Oscar" }
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing or invalid movie title" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Review": {
+        "type": "object",
+        "properties": {
+          "rotten_tomatoes_link": { "type": "string", "format": "uri" },
+          "movie_title": { "type": "string" },
+          "critic_name": { "type": "string" },
+          "top_critic": { "type": "boolean" },
+          "publisher_name": { "type": "string" },
+          "review_type": { "type": "string", "enum": ["Fresh", "Rotten"] },
+          "review_score": { "type": "number", "nullable": true },
+          "review_date": { "type": "string", "format": "date-time" },
+          "review_content": { "type": "string" }
+        }
+      },
+      "Oscar": {
+        "type": "object",
+        "properties": {
+          "year_film": { "type": "integer" },
+          "year_ceremony": { "type": "integer" },
+          "ceremony": { "type": "integer" },
+          "category": { "type": "string" },
+          "name": { "type": "string" },
+          "film": { "type": "string" },
+          "winner": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

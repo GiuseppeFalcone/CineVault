@@ -1,0 +1,92 @@
+/* chat.css */
+
+/* ----- Chat Area Styles ----- */
+.chat-area {
+    background-color: #23272b;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    height: 500px; /* Adjust as needed */
+    display: flex;
+    flex-direction: column;
+}
+
+/* The container for messages: scrollable, vertical layout */
+#messages {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+/* Message bubble: shrink-to-fit content, with a maximum width */
+.message-bubble {
+    display: block;
+    width: fit-content;
+    max-width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+/* User's own messages: align to the right, different background */
+.message-bubble.user-message {
+background-color: #fde885;
+    color: black;
+    margin-left: auto;
+    margin-right: 0;
+    text-align: right;
+}
+
+/* Other users' messages: align to the left */
+.message-bubble:not(.user-message) {
+    background-color: #343a40;
+    color: white;
+    margin-right: auto;
+    margin-left: 0;
+    text-align: left;
+}
+
+/* Header inside a message bubble (shows username and timestamp) */
+.message-header {
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+/* Message text styling */
+.message-text {
+    font-size: 1rem;
+}
+
+/* System messages: display as plain, centered text */
+.system-message {
+    text-align: center;
+    color: #aaa;
+    font-style: italic;
+    margin: 10px 0;
+}
+
+/* ----- Chat List Styles ----- */
+.chat-list {
+    background-color: #23272b;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    height: 500px; /* Adjust as needed */
+    overflow-y: auto;
+}
+
+/* Individual chat list item styling */
+.chat-item {
+    color: white;
+    background-color: #465157;
+    cursor: pointer;
+}
+
+/* Active chat list item: highlighted with border and color change */
+.chat-item.active-btn {
+    border: 1px solid #ffc107;
+    font-weight: bold;
+    background-color: #343a40;
+    color: #ffc107;
+}

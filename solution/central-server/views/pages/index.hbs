@@ -1,0 +1,84 @@
+{{!-- views/index.hbs --}}
+<link rel="stylesheet" href="/stylesheets/carousel.css"/>
+<link rel="stylesheet" href="/stylesheets/movie-row.css"/>
+<link rel="stylesheet" href="/stylesheets/movie-card.css"/>    <div id="movieCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+
+
+<div class="container" id="body-container">
+    <!-- Carousel Section -->
+        <div class="carousel-inner">
+            <!-- Top Reviewed Movie -->
+            <div class="carousel-item active">
+                <a href="/movies/{{topRated.0.id}}">
+                    <img
+                            src="{{#if topRated.0.posterLink}}{{topRated.0.posterLink}}{{else}}https://placehold.co/200x180/grey/white?text={{topRated.0.title}}{{/if}}"
+                            class="d-block w-100"
+                            alt="{{topRated.0.title}}"
+                            loading="lazy"
+                            data-title="{{topRated.0.title}}"
+                            data-category="Users Top Rated"
+                            data-movie-id="{{topRated.0.id}}">
+                </a>
+            </div>
+            <!-- Newest Movie -->
+            <div class="carousel-item">
+                <a href="/movies/{{newest.movieSummaryDTOs.0.id}}">
+                    <img
+                            src="{{#if newest.movieSummaryDTOs.0.posterLink}}{{newest.movieSummaryDTOs.0.posterLink}}{{else}}https://placehold.co/200x180/grey/white?text={{newest.movieSummaryDTOs.0.title}}{{/if}}"
+                            class="d-block w-100"
+                            alt="{{newest.movieSummaryDTOs.0.title}}"
+                            loading="lazy"
+                            data-title="{{newest.movieSummaryDTOs.0.title}}"
+                            data-category="{{newest.category}}"
+                            data-movie-id="{{newest.movieSummaryDTOs.0.id}}">
+                </a>
+            </div>
+            <!-- Genre-based Movie Items -->
+            {{#each genreCategories}}
+                <div class="carousel-item">
+                    <a href="/movies/{{this.movieSummaryDTOs.0.id}}">
+                        <img
+                                src="{{#if this.movieSummaryDTOs.0.posterLink}}{{this.movieSummaryDTOs.0.posterLink}}{{else}}https://placehold.co/200x180/grey/white?text={{this.movieSummaryDTOs.0.title}}{{/if}}"
+                                class="d-block w-100"
+                                alt="{{this.movieSummaryDTOs.0.title}}"
+                                loading="lazy"
+                                data-title="{{this.movieSummaryDTOs.0.title}}"
+                                data-category="{{this.category}}"
+                                data-movie-id="{{this.movieSummaryDTOs.0.id}}">
+                    </a>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <!-- Global Carousel Footer -->
+    <div class="carousel-footer d-flex justify-content-between align-items-center mb-4">
+        <div class="carousel-caption-footer">
+            <h3 id="carouselCaptionTitle"></h3>
+            <p id="carouselCaptionCategory"></p>
+        </div>
+        <div class="carousel-controls-footer">
+            <button class="btn btn-custom" id="prevButton" data-bs-target="#movieCarousel" data-bs-slide="prev" aria-label="Previous">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <button class="btn btn-custom" id="carouselPauseButton" aria-label="Pause/Play">
+                <i class="bi bi-pause-fill"></i>
+            </button>
+            <button class="btn btn-custom" id="nextButton" data-bs-target="#movieCarousel" data-bs-slide="next" aria-label="Next">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    {{!-- Top Rated Movies By Users --}}
+    {{> movie-row movies=topRated category="Users Top Rated" }}
+    {{!-- Newest Movies Row --}}
+    {{> movie-row movies=newest.movieSummaryDTOs category=newest.category }}
+    {{!-- Genre-based Movie Rows --}}
+    {{#each genreCategories}}
+        {{> movie-row movies=this.movieSummaryDTOs category=this.category}}
+    {{/each}}
+</div>
+
+<script src="/javascripts/index.js"></script>
+<script src="/javascripts/movie-row.js"></script>

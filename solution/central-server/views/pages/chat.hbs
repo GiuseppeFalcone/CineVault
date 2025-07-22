@@ -1,0 +1,82 @@
+<link rel="stylesheet" href="/stylesheets/chat.css">
+
+<div class="container mb-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h1 class="text-white">Cinevault Chat</h1>
+        <button id="change-username-btn" class="btn btn-secondary">Username: Anonymous</button>
+    </div>
+
+    <div class="d-flex mb-3 align-items-center">
+        <div class="btn-group" role="group" aria-label="Namespace Selector">
+            <button class="btn btn-secondary namespace-btn me-1 active-btn" data-namespace="general">General</button>
+            <button class="btn btn-secondary namespace-btn me-1" data-namespace="movies">Movies</button>
+            <button class="btn btn-secondary namespace-btn me-1" data-namespace="actors">Actors</button>
+            <button class="btn btn-secondary namespace-btn me-1" data-namespace="countries">Countries</button>
+            <button class="btn btn-secondary namespace-btn me-1" data-namespace="genres">Genres</button>
+        </div>
+        <button id="toggle-chime-btn" class="btn btn-outline-secondary ms-auto" title="Mute/Unmute Chime">
+            <span id="chime-icon" class="bi bi-volume-up"></span>
+        </button>
+    </div>
+
+    <div class="row">
+        <!-- Chat List -->
+        <div class="col-md-4">
+            <div class="chat-list">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="text-white">Chats</h2>
+                    <button id="new-chat-btn" class="btn btn-secondary">New Chat</button>
+                </div>
+                <ul id="chat-list" class="list-group">
+                    {{!-- Loop through available chats --}}
+                    {{#each chats}}
+                        <li class="list-group-item chat-item {{#if active}}active-btn{{/if}}" data-chat-id="{{id}}">
+                            {{name}}
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="col-md-8">
+            <div class="chat-area">
+                <div id="no-chat-message" class="text-center py-5 text-white">
+                    <h5>Select a chat to connect with others</h5>
+                </div>
+                <div id="messages" class="mb-3">
+                    {{!-- Loop through messages --}}
+                    {{#each messages}}
+                        <div class="message-bubble {{#if isUser}}user-message{{/if}}">
+                            <div class="message-header">
+                                <strong>{{#if isUser}}You{{else}}{{username}}{{/if}}</strong>
+                                <small class="text-muted">{{timestamp}}</small>
+                            </div>
+                            <div class="message-text">
+                                {{text}}
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+                <!-- Typing indicator -->
+                <div id="typing-indicator" class="mb-2 text-muted"></div>
+                <form id="message-form">
+                    <div class="input-group">
+                        <input id="message-input" type="text" class="form-control" placeholder="Type your message..."
+                               autocomplete="off" required>
+                        <button class="btn btn-secondary" type="submit">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Audio element for message chime -->
+<audio id="message-chime" src="/audio/chime.mp3" preload="auto"></audio>
+
+<!-- Socket.IO -->
+<script src="/socket.io/socket.io.js"></script>
+<!-- Custom Chat JS -->
+<script src="/javascripts/chat.js"></script>

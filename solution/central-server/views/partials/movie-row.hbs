@@ -1,0 +1,22 @@
+{{!-- movie-row.hbs --}}
+<section class="common-section movie-row">
+    <div class="container text-white ">
+        <h2 class="mb-3">{{category}}</h2>
+        <div class="position-relative">
+            <!-- Left arrow button -->
+            <button class="btn btn-secondary position-absolute top-50 start-0 translate-middle-y left-arrow">
+                <i class="bi bi-arrow-left text-warning"></i>
+            </button>
+            <!-- Scrollable container of cards -->
+            <div class="row flex-nowrap overflow-auto mx-5 cards-container">
+                {{#each movies}}
+                    {{> movie-card}}
+                {{/each}}
+            </div>
+            <!-- Right arrow button -->
+            <button class="btn btn-secondary position-absolute top-50 end-0 translate-middle-y right-arrow">
+                <i class="bi bi-arrow-right text-warning"></i>
+            </button>
+        </div>
+    </div>
+</section>

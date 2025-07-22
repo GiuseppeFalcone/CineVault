@@ -1,0 +1,7 @@
+/* movie-row.css */
+
+.row.flex-nowrap.overflow-auto {
+    gap: 1rem;
+    scroll-behavior: smooth;
+    padding-bottom: 1rem;
+}

@@ -1,0 +1,103 @@
+# =========================================
+#  SISTEMI OPERATIVI
+# =========================================
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# =========================================
+#  IDE E STRUMENTI
+# =========================================
+
+# IntelliJ, WebStorm, PyCharm (JetBrains)
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+# Se usi i plugin Maven/Gradle, puoi ignorare anche i file dei workspace generati:
+# *.mvn
+# .gradle
+
+# Visual Studio Code
+.vscode/
+
+# =========================================
+#  NODE.JS
+# =========================================
+
+# Dipendenze
+node_modules/
+# Log e file di debug
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+# File di configurazione locali
+.env
+
+# Coverage (test)
+coverage/
+.nyc_output/
+
+# Build artifacts (se usi un bundler come webpack)
+dist/
+
+# =========================================
+#  JAVA (Spring Boot, Maven, Gradle)
+# =========================================
+
+# Cartelle di build Maven e Gradle
+target/
+build/
+# File generati (bytecode, archivio)
+*.class
+*.jar
+*.war
+*.ear
+HELP.md
+# Wrapper Gradle
+gradle-wrapper.jar
+# Log e file temporanei
+hs_err_pid*
+replay_pid*
+
+# =========================================
+#  PYTHON
+# =========================================
+
+# Cache ed environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# Ambienti virtuali
+venv/
+.venv/
+env/
+.venv/
+
+# =========================================
+#  ALTRI FILE TEMPORANEI / DI SERVIZIO
+# =========================================
+
+# File di lock o di sessione
+*.lock
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# File dati
+*.csv
+
+# File di test e cartelle di output
+test-output/
+reports/
+
+# =========================================
+#  FINE .GITIGNORE
+# =========================================

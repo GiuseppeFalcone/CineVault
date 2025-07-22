@@ -1,0 +1,63 @@
+{{!-- footer.hbs --}}
+<footer class="bg-dark text-white mt-auto w-100">
+    <div class="py-3 px-4">
+        <div class="row align-items-center">
+            <!-- Left: Logo -->
+            <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                <img src="/images/logo.png" alt="Logo" class="img-fluid" style="max-height: 60px;">
+            </div>
+            <!-- Center: Description and Creators -->
+            <div class="col-md-4 text-center">
+                <p class="mb-2">CineVault is your go-to wiki for everything movies—offering detailed film info, behind-the-scenes insights, reviews, and a vibrant community for cinema enthusiasts.</p>
+                <p class="mb-1">Created by:</p>
+                <div class="d-flex justify-content-center">
+                    <div class="me-3">
+                        <span>Giuseppe Falcone</span>
+                        <a href="{{giuseppeInstagram}}" target="_blank">
+                            <img src="/images/instagram.png" alt="Instagram" width="20">
+                        </a>
+                        <a href="{{giuseppeLinkedin}}" target="_blank">
+                            <img src="/images/linkedin.png" alt="LinkedIn" width="20">
+                        </a>
+                    </div>
+                    <div>
+                        <span>Gabriele Vettorello</span>
+                        <a href="#" target="_blank">
+                            <img src="/images/instagram.png" alt="Instagram" width="20">
+                        </a>
+                        <a href="#" target="_blank">
+                            <img src="/images/linkedin.png" alt="LinkedIn" width="20">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Right: Quick Links -->
+            <div class="col-md-4 text-center text-md-end">
+                <p>Documentation:</p>
+                <ul class="list-unstyled mb-0">
+                    <li>
+                        <a href="http://localhost:3000/api-docs" class="text-warning" target="_blank" rel="noopener noreferrer">
+                            Central server
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:8080/api-docs" class="text-warning" target="_blank" rel="noopener noreferrer">
+                            Static data server
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://localhost:3001/api-docs" class="text-warning" target="_blank" rel="noopener noreferrer">
+                            Dynamic data server
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col text-center">
+                <hr class="border-warning">
+                <p class="small mb-0">&copy; 2025 CineVault. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
